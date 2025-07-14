@@ -18,6 +18,34 @@ const AddShows = () => {
     setNowPlayingMovies(dummyShowsData)
    };
 
+   const handleDateTimeAdd = () => {
+    if(!dateTimeInput) return;
+    const [date, time] = dateTimeInput.split("T");
+    if(!date || !time) return;
+
+    setDateTimeSelection((prev) => {
+      const times = prev[date]  || [];
+      if(!times.includes(time)) {
+        return {...prev, [date] : [...times, time]}
+      }
+      return prev;
+    });
+   };
+
+   const handleRemoveTime = (date, time) => {
+    setDateTimeSelection((prev) => {
+      const filteredTimes = prev[date].filter((t) => t !== time);
+      if(filteredTimes.length === 0) {
+        const { [date]: _, ...rest }  = prev;
+        return rest;
+      }
+      return {
+        ...prev,
+        [date]: filteredTimes,
+      };
+    });
+   };
+
    useEffect(()=>{
     fetchNowPlayingMovies();
    },[]);
@@ -76,6 +104,13 @@ const AddShows = () => {
 
   </div>
 
+      {/* Display selected times*/}
+      {Object.jeys(dateTimeSelection).length > 0 && (
+        <d iv className='mt-6'>
+          <h2 className='mb-2'>Selected Date-Time</h2>
+          <ul> class space-y-3</ul>
+        </d>
+      )}
     </>
   ) : <Loading/>
 }
